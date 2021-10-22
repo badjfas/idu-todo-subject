@@ -18,6 +18,18 @@ export const pickerTheme = createTheme({
         width: 999,
       },
     },
+    MuiPickersCalendar: {
+      week: {
+        "& div": {
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: 36,
+          height: 36,
+          margin: "0px 2px",
+        },
+      },
+    },
   },
 });
 

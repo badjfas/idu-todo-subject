@@ -10,15 +10,15 @@ const AppContainer = () => {
   const [date, changeDate] = useState<moment.Moment>(currentDate);
   const [open, setOpen] = useState(false);
   const [todo, setTodo] = useState<TodoState[]>([]);
-  const current = `${date.year()}년 ${date.month()}월 ${date.date()}일`;
+  const selectedDate = date.format("YYYY년 MM월 DD일");
 
   useEffect(() => {
-    const data = sessionStorage.getItem(current);
+    const data = sessionStorage.getItem(selectedDate);
 
     if (data) {
       setTodo(JSON.parse(data));
     }
-  }, [date, current]);
+  }, [date, selectedDate]);
 
   useEffect(() => {
     if (!open) {

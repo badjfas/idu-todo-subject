@@ -7,7 +7,6 @@ import {
   Typography,
   Checkbox,
 } from "@material-ui/core";
-import { EventNote } from "@material-ui/icons";
 import React from "react";
 import { useState } from "react";
 import { DialogProps, TodoState } from "./types";
@@ -16,7 +15,7 @@ const TodoDialog = (props: DialogProps) => {
   const { date, addTodo, todo, setTodo, ...rest } = props;
   const [text, setText] = useState("");
   const classes = useStyles();
-  const current = `${date.year()}년 ${date.month()}월 ${date.date()}일`;
+  const current = date.format("YYYY년 MM월 DD일");
 
   const onClick = () => {
     if (text === "") {
@@ -41,6 +40,12 @@ const TodoDialog = (props: DialogProps) => {
     setTodo(fixed);
   };
 
+  const onDelete = (form: TodoState) => {
+    const target = todo.filter((v) => v.id !== form.id);
+
+    setTodo(target);
+  };
+
   const onSave = () => {
     sessionStorage.setItem(current, JSON.stringify(todo));
 
@@ -50,8 +55,7 @@ const TodoDialog = (props: DialogProps) => {
   return (
     <Dialog {...rest} maxWidth="sm" fullWidth className={classes.root}>
       <Grid container className={classes.header}>
-        <Typography color="primary" className="current">
-          <EventNote fontSize="large" />
+        <Typography color="textPrimary" className="current">
           {current}
         </Typography>
       </Grid>
@@ -63,6 +67,7 @@ const TodoDialog = (props: DialogProps) => {
           variant="outlined"
           value={text}
           onChange={(e) => setText(e.currentTarget.value)}
+          placeholder="해야 할 일은 무엇인가요?"
         />
         <Button variant="contained" color="primary" fullWidth onClick={onClick}>
           등록
@@ -71,14 +76,22 @@ const TodoDialog = (props: DialogProps) => {
         <Grid item className={classes.todoList}>
           {todo.map((v, i) => {
             return (
-              <Grid item className="item" key={i}>
+              <Grid item className={`item`} key={i}>
                 <Checkbox
                   onClick={() => onComplete({ ...v, ok: !v.ok })}
                   checked={v.ok}
                   color="primary"
+                  disabled={v.ok}
                 />
-                {v.title}
-                <Button color="default" size="small" variant="contained">
+                <Typography className={`title ${v.ok ? "finished" : ""}`}>
+                  {v.title}
+                </Typography>
+                <Button
+                  onClick={() => onDelete({ ...v })}
+                  color="primary"
+                  size="small"
+                  variant="outlined"
+                >
                   삭제
                 </Button>
               </Grid>
@@ -125,6 +138,7 @@ const useStyles = makeStyles(() => ({
     padding: 16,
   },
   todoList: {
+    width: "100%",
     maxHeight: 400,
     overflow: "scroll",
     margin: "16px 0px",
@@ -132,6 +146,18 @@ const useStyles = makeStyles(() => ({
       display: "flex",
       alignItems: "center",
       justifyContent: "space-between",
+      "& .title": {
+        display: "flex",
+        alignItems: "center",
+        textOverflow: "ellipsis",
+        overflow: "hidden",
+        width: "calc(100% - 120px)",
+        height: 42,
+      },
+
+      "&.finished": {
+        opacity: 0.4,
+      },
     },
   },
   textField: {

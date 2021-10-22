@@ -6,9 +6,18 @@ import moment from "moment";
 import "moment/locale/ko";
 import { CssBaseline, ThemeProvider, createTheme } from "@material-ui/core";
 import AppContainer from "./AppContainer";
+import { blue } from "@material-ui/core/colors";
 moment.locale("ko"); // it is required to select default locale manually
 
 const theme = createTheme({
+  palette: {
+    primary: {
+      light: blue[500],
+      main: blue[600],
+      dark: blue[900],
+      contrastText: "#fff",
+    },
+  },
   overrides: {
     MuiCssBaseline: {
       "@global": {
@@ -31,7 +40,3 @@ ReactDOM.render(
   </ThemeProvider>,
   document.getElementById("root")
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
